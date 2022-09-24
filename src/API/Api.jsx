@@ -9,7 +9,12 @@ export const getImages = async (page, query) => {
   try {
     const server = await axios.get(serverDataURL);
     const data = await server.data;
-    const hits = data.hits;
-    return hits;
+    const length = data.hits.length;
+    const dataHits = {
+      images: data.hits,
+      total: length,
+      totalHits: data.totalHits,
+    };
+    return dataHits;
   } catch (error) {}
 };
