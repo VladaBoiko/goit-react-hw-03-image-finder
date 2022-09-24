@@ -1,10 +1,13 @@
 import { Form, Field, Formik } from 'formik';
 const initialValues = {
   query: '',
+  page: 1,
 };
-export const SearchBar = () => {
+export const SearchBar = ({ updateQuery, getData }) => {
   const handleSubmit = (values, { resetForm }) => {
-    console.log(values);
+    // console.log(values);
+    updateQuery(values);
+    getData(values);
     resetForm();
   };
   return (
@@ -13,7 +16,7 @@ export const SearchBar = () => {
         <Form autoComplete="off">
           {/* <label htmlFor="search"> */}
           <Field
-            name="search"
+            name="query"
             type="text"
             autoComplete="off"
             autoFocus
