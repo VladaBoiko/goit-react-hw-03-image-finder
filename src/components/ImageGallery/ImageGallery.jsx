@@ -1,6 +1,6 @@
 import { ImgGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { nanoid } from 'nanoid';
-export const ImgGallery = ({ data }) => {
+export const ImgGallery = ({ data, onClick }) => {
   // console.log(data);
   return (
     <ul>
@@ -11,6 +11,7 @@ export const ImgGallery = ({ data }) => {
             img={img.webformatURL}
             alt={img.type}
             key={nanoid(4)}
+            onClick={onClick}
           />
         );
       })}{' '}

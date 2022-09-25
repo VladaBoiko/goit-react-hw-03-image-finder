@@ -4,6 +4,7 @@ import { SearchBar } from './Searchbar/SearchBar';
 import { ImgGallery } from './ImageGallery/ImageGallery';
 import { getImages } from 'API/Api';
 import { LoadMore } from './LoadMore/LoadMore';
+import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
@@ -14,28 +15,7 @@ export class App extends Component {
     query: '',
     hits: null,
     totalHits: null,
-  };
-  updateQuery = value => {
-    this.setState({
-      query: value.query,
-      page: 1,
-      images: [],
-    });
-  };
-  getData = async () => {
-    try {
-      this.setState({ isLoading: true });
-      const images = await getImages(this.state.page, this.state.query);
-      this.setState(prevState => ({
-        images: [...prevState.images, ...images.images],
-        isLoading: false,
-        hits: images.total,
-        totalHits: images.totalHits,
-      }));
-    } catch (error) {
-      this.setState({ error: true, isLoading: false });
-      console.log(error);
-    }
+    showModal: false,
   };
   async componentDidUpdate(_, prevState) {
     const prevRequest = prevState.request;
@@ -53,13 +33,39 @@ export class App extends Component {
       this.getData();
     }
   }
+  getData = async () => {
+    try {
+      this.setState({ isLoading: true });
+      const images = await getImages(this.state.page, this.state.query);
+      this.setState(prevState => ({
+        images: [...prevState.images, ...images.images],
+        isLoading: false,
+        hits: images.total,
+        totalHits: images.totalHits,
+      }));
+    } catch (error) {
+      this.setState({ error: true, isLoading: false });
+      console.log(error);
+    }
+  };
+  updateQuery = value => {
+    this.setState({
+      query: value.query,
+      page: 1,
+      images: [],
+    });
+  };
   loadMore = async () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
   };
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+
   render() {
-    const { images, isLoading, hits, totalHits } = this.state;
+    const { images, isLoading, hits, totalHits, showModal } = this.state;
     return (
       <div
         style={{
@@ -74,7 +80,7 @@ export class App extends Component {
         <SearchBar updateQuery={this.updateQuery} getData={this.getData} />
         {images.length !== 0 && (
           <>
-            <ImgGallery data={images} />{' '}
+            <ImgGallery data={images} onClick={this.toggleModal} />{' '}
             {isLoading && (
               <ColorRing
                 visible={true}
@@ -103,6 +109,7 @@ export class App extends Component {
             colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
           />
         )}
+        {showModal && <Modal />}
       </div>
     );
   }
