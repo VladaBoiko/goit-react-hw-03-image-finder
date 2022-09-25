@@ -1,20 +1,20 @@
 import { Form, Field, Formik } from 'formik';
+import { Header } from './SearchBar.styled';
+import PropTypes from 'prop-types';
 const initialValues = {
   query: '',
   page: 1,
 };
 export const SearchBar = ({ updateQuery, getData }) => {
   const handleSubmit = (values, { resetForm }) => {
-    // console.log(values);
     updateQuery(values);
     getData(values);
     resetForm();
   };
   return (
-    <header>
+    <Header>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         <Form autoComplete="off">
-          {/* <label htmlFor="search"> */}
           <Field
             name="query"
             type="text"
@@ -22,14 +22,17 @@ export const SearchBar = ({ updateQuery, getData }) => {
             autoFocus
             placeholder="Search images and photos"
           />
-          {/* <ErrorMessage name="search" component="p" /> */}
-          {/* </label> */}
 
           <button type="submit">
             <span>Search</span>
           </button>
         </Form>
       </Formik>
-    </header>
+    </Header>
   );
+};
+
+SearchBar.propTypes = {
+  updateQuery: PropTypes.func.isRequired,
+  getData: PropTypes.func.isRequired,
 };

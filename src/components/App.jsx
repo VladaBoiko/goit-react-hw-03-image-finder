@@ -4,7 +4,7 @@ import { SearchBar } from './Searchbar/SearchBar';
 import { ImgGallery } from './ImageGallery/ImageGallery';
 import { getImages } from 'API/Api';
 import { LoadMore } from './LoadMore/LoadMore';
-import { Modal } from './Modal/Modal';
+import Modal from './Modal/Modal';
 
 export class App extends Component {
   state = {
@@ -16,6 +16,10 @@ export class App extends Component {
     hits: null,
     totalHits: null,
     showModal: false,
+    modalData: {
+      bigImg: '',
+      alt: '',
+    },
   };
   async componentDidUpdate(_, prevState) {
     const prevRequest = prevState.request;
@@ -60,56 +64,76 @@ export class App extends Component {
       page: prevState.page + 1,
     }));
   };
-  toggleModal = () => {
+  toggleModal = evt => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
+    if (evt.target.nodeName !== 'IMG') {
+      return;
+    }
+    this.setState({
+      modalData: {
+        bigImg: evt.target.dataset.src,
+        alt: evt.target.getAttribute('alt'),
+      },
+    });
   };
-
+  resetModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+    this.setState({
+      modalData: {
+        bigImg: '',
+        alt: '',
+      },
+    });
+  };
   render() {
-    const { images, isLoading, hits, totalHits, showModal } = this.state;
+    const { images, isLoading, hits, totalHits, showModal, modalData } =
+      this.state;
+    const { bigImg, alt } = modalData;
     return (
       <div
         style={{
           width: '1240px',
           padding: '0 20px',
           margin: '0 auto',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
         }}
       >
         <SearchBar updateQuery={this.updateQuery} getData={this.getData} />
+        {images.length === 0 && !isLoading && (
+          <p
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              fontSize: '75px',
+              fontWeight: 'bold',
+              fontStyle: 'italic',
+              color: '#87a9c7',
+            }}
+          >
+            There`re no images yet. Please enter the search category!
+          </p>
+        )}
         {images.length !== 0 && (
           <>
             <ImgGallery data={images} onClick={this.toggleModal} />{' '}
-            {isLoading && (
-              <ColorRing
-                visible={true}
-                height="80"
-                width="80"
-                ariaLabel="blocks-loading"
-                wrapperStyle={{}}
-                wrapperClass="blocks-wrapper"
-                colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-              />
-            )}
           </>
         )}
-        {hits >= 12 && images.length !== totalHits && (
+        {hits >= 12 && images.length !== totalHits && !isLoading && (
           <LoadMore click={this.loadMore} />
         )}
 
         {isLoading && (
           <ColorRing
             visible={true}
-            height="80"
-            width="80"
+            height="180"
+            width="180"
             ariaLabel="blocks-loading"
             wrapperStyle={{}}
             wrapperClass="blocks-wrapper"
             colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
           />
         )}
-        {showModal && <Modal />}
+        {showModal && <Modal src={bigImg} alt={alt} close={this.resetModal} />}
       </div>
     );
   }
