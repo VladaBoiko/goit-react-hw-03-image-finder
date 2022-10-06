@@ -6,6 +6,7 @@ const BASIC_URL = `https://pixabay.com/api/?key=${API_KEY}&q=`;
 const searchParams = '&image_type=photo&orientation=horizontal';
 
 export const getImages = async (page, query) => {
+  // console.log(query);
   const serverDataURL = `${BASIC_URL}${query}${searchParams}&page=${page}&per_page=12`;
   try {
     const server = await axios.get(serverDataURL);
@@ -16,6 +17,7 @@ export const getImages = async (page, query) => {
       total: length,
       totalHits: data.totalHits,
     };
+    // console.log(query);
     return dataHits;
   } catch (error) {}
 };

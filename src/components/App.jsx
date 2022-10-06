@@ -8,11 +8,11 @@ import Modal from './Modal/Modal';
 
 export class App extends Component {
   state = {
+    query: '',
     images: [],
     isLoading: false,
     error: false,
     page: 1,
-    query: '',
     hits: null,
     totalHits: null,
     showModal: false,
@@ -21,9 +21,40 @@ export class App extends Component {
       alt: '',
     },
   };
+  updateQuery = value => {
+    // console.log(this.state, 'update');
+    this.setState({
+      query: value.query,
+      page: 1,
+      images: [],
+    });
+    // console.log(this.state, 'after update');
+  };
+  getData = async () => {
+    // console.log('get');
+    try {
+      if (!this.state.query) {
+        console.log(this.state.query);
+        return;
+      }
+      this.setState({ isLoading: true });
+      // console.log(this.state, 'before get');
+      const images = await getImages(this.state.page, this.state.query);
+      // console.log(this.state, 'after get');
+      this.setState(prevState => ({
+        images: [...prevState.images, ...images.images],
+        isLoading: false,
+        hits: images.total,
+        totalHits: images.totalHits,
+      }));
+    } catch (error) {
+      this.setState({ error: true, isLoading: false });
+      console.log(error);
+    }
+  };
   async componentDidUpdate(_, prevState) {
-    const prevRequest = prevState.request;
-    const nextRequest = this.state.request;
+    const prevRequest = prevState.query;
+    const nextRequest = this.state.query;
     const prevPage = prevState.page;
     const nextPage = this.state.page;
 
@@ -37,28 +68,6 @@ export class App extends Component {
       this.getData();
     }
   }
-  getData = async () => {
-    try {
-      this.setState({ isLoading: true });
-      const images = await getImages(this.state.page, this.state.query);
-      this.setState(prevState => ({
-        images: [...prevState.images, ...images.images],
-        isLoading: false,
-        hits: images.total,
-        totalHits: images.totalHits,
-      }));
-    } catch (error) {
-      this.setState({ error: true, isLoading: false });
-      console.log(error);
-    }
-  };
-  updateQuery = value => {
-    this.setState({
-      query: value.query,
-      page: 1,
-      images: [],
-    });
-  };
   loadMore = async () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
