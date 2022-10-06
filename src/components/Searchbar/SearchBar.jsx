@@ -7,13 +7,9 @@ const initialValues = {
 };
 export const SearchBar = ({ updateQuery, getData }) => {
   const handleSubmit = (values, { resetForm }) => {
-    // console.log(values.query, 'до апдейт');
     updateQuery(values);
-    // console.log(values.query, 'до гет');
     getData();
-    // console.log(values, 'до ресет');
     resetForm();
-    // console.log(values, 'после ресет');
   };
   return (
     <Header>

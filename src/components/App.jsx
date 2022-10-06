@@ -22,25 +22,20 @@ export class App extends Component {
     },
   };
   updateQuery = value => {
-    // console.log(this.state, 'update');
     this.setState({
       query: value.query,
       page: 1,
       images: [],
     });
-    // console.log(this.state, 'after update');
   };
   getData = async () => {
-    // console.log('get');
     try {
       if (!this.state.query) {
         console.log(this.state.query);
         return;
       }
       this.setState({ isLoading: true });
-      // console.log(this.state, 'before get');
       const images = await getImages(this.state.page, this.state.query);
-      // console.log(this.state, 'after get');
       this.setState(prevState => ({
         images: [...prevState.images, ...images.images],
         isLoading: false,
