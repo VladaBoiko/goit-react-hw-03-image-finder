@@ -5,10 +5,10 @@ const initialValues = {
   query: '',
   page: 1,
 };
-export const SearchBar = ({ updateQuery, getData }) => {
+export const SearchBar = ({ updateQuery }) => {
   const handleSubmit = (values, { resetForm }) => {
     updateQuery(values);
-    getData();
+    // getData();
     resetForm();
   };
   return (
@@ -34,5 +34,5 @@ export const SearchBar = ({ updateQuery, getData }) => {
 
 SearchBar.propTypes = {
   updateQuery: PropTypes.func.isRequired,
-  getData: PropTypes.func.isRequired,
+  // getData: PropTypes.func.isRequired,
 };

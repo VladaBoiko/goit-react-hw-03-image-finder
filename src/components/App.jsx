@@ -1,4 +1,3 @@
-/* eslint-disable react/no-direct-mutation-state */
 import { ColorRing } from 'react-loader-spinner';
 import { Component } from 'react';
 import { SearchBar } from './Searchbar/SearchBar';
@@ -23,11 +22,14 @@ export class App extends Component {
     },
   };
   updateQuery = value => {
-    this.state.query = value.query;
-    this.state.page = 1;
-    this.state.images = [];
+    this.setState({
+      query: value.query,
+      page: 1,
+      images: [],
+    });
   };
   getData = async () => {
+    // console.log(this.state, 'get');
     try {
       if (!this.state.query) {
         console.log(this.state.query);
@@ -100,7 +102,7 @@ export class App extends Component {
           margin: '0 auto',
         }}
       >
-        <SearchBar updateQuery={this.updateQuery} getData={this.getData} />
+        <SearchBar updateQuery={this.updateQuery} />
         {images.length === 0 && !isLoading && (
           <p
             style={{
