@@ -1,3 +1,4 @@
+/* eslint-disable react/no-direct-mutation-state */
 import { ColorRing } from 'react-loader-spinner';
 import { Component } from 'react';
 import { SearchBar } from './Searchbar/SearchBar';
@@ -22,11 +23,9 @@ export class App extends Component {
     },
   };
   updateQuery = value => {
-    this.setState({
-      query: value.query,
-      page: 1,
-      images: [],
-    });
+    this.state.query = value.query;
+    this.state.page = 1;
+    this.state.images = [];
   };
   getData = async () => {
     try {
@@ -54,11 +53,11 @@ export class App extends Component {
     const nextPage = this.state.page;
 
     if (prevRequest !== nextRequest) {
+      // console.log(this.state, 'update')
       this.state.images = [];
       this.state.page = 1;
       this.getData();
     }
-
     if (prevPage !== nextPage) {
       this.getData();
     }
